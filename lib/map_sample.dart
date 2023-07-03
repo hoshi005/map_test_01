@@ -24,11 +24,13 @@ class _MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
+  // 初期位置.
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(35.6861789, 139.8041426),
     zoom: 14.4746,
   );
 
+  // 移動先.
   static const CameraPosition _kLake = CameraPosition(
     bearing: 192.8334901395799,
     target: LatLng(35.4984714, 138.8295337),
