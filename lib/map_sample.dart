@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'locations.dart' as locations;
 
 class MapSample extends StatefulWidget {
   const MapSample({super.key});
@@ -12,8 +13,24 @@ class _MapSampleState extends State<MapSample> {
   late GoogleMapController _mapController;
   final LatLng _center = const LatLng(35.6861789, 139.8041426);
 
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
+  final Map<String, Marker> _markers = {};
+
+  void _onMapCreated(GoogleMapController controller) async {
+    final googleOffices = await locations.getGoogleOffices();
+    setState(() {
+      _markers.clear();
+      for (final office in googleOffices.offices) {
+        final marker = Marker(
+          markerId: MarkerId(office.name),
+          position: LatLng(office.lat, office.lng),
+          infoWindow: InfoWindow(
+            title: office.name,
+            snippet: office.address,
+          ),
+        );
+        _markers[office.name] = marker;
+      }
+    });
   }
 
   @override
@@ -26,6 +43,7 @@ class _MapSampleState extends State<MapSample> {
           target: _center,
           zoom: 11.0,
         ),
+        markers: _markers.values.toSet(),
       ),
     );
   }
