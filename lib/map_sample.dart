@@ -19,7 +19,7 @@ class _MapSampleState extends State<MapSample> {
     final googleOffices = await locations.getGoogleOffices();
     setState(() {
       _markers.clear();
-      for (final office in googleOffices.offices) {
+      for (final office in googleOffices?.offices ?? []) {
         final marker = Marker(
           markerId: MarkerId(office.name),
           position: LatLng(office.lat, office.lng),

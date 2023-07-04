@@ -78,16 +78,24 @@ class Locations {
   final List<Region> regions;
 }
 
-Future<Locations> getGoogleOffices() async {
+Future<Locations?> getGoogleOffices() async {
   const googleLocationsURL = 'https://about.google/static/data/locations.json';
 
-  try {} catch (e) {
+  try {
+    final response = await http.get(Uri.parse(googleLocationsURL));
+    if (response.statusCode == 200) {
+      print('network is success !!!');
+      return Locations.fromJson(json.decode(response.body));
+    }
+  } catch (e) {
     print(e);
   }
 
-  return Locations.fromJson(
-    json.decode(
-      await rootBundle.loadString('assets/locations.json'),
-    ),
-  );
+  return null;
+
+  // return Locations.fromJson(
+  //   json.decode(
+  //     await rootBundle.loadString('assets/locations.json'),
+  //   ),
+  // );
 }
