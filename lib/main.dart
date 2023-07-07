@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:map_test/map_sample.dart';
+import 'package:map_test/map_sample2.dart';
 
 void main() {
   runApp(const MyApp());
