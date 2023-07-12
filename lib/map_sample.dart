@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'locations.dart' as locations;
 
@@ -36,9 +37,11 @@ class _MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
+    final dotenvText = dotenv.env['VAR_NAME'];
+    final flutterConfigText = FlutterConfig.get('FLUTTER_CONFIG');
     return Scaffold(
       appBar: AppBar(
-        title: Text(dotenv.get('VAR_NAME')),
+        title: Text('$dotenvText + $flutterConfigText'),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
