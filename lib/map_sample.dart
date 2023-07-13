@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'locations.dart' as locations;
 
 class MapSample extends StatefulWidget {
@@ -36,12 +37,27 @@ class _MapSampleState extends State<MapSample> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    Future(() async {
+      await _requestPermission();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dotenvText = dotenv.env['VAR_NAME'];
     final flutterConfigText = FlutterConfig.get('FLUTTER_CONFIG');
     return Scaffold(
       appBar: AppBar(
         title: Text('$dotenvText + $flutterConfigText'),
+        actions: [
+          IconButton(
+            onPressed: _requestPermission,
+            icon: const Icon(Icons.location_city),
+          ),
+        ],
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
@@ -52,5 +68,19 @@ class _MapSampleState extends State<MapSample> {
         markers: _markers.values.toSet(),
       ),
     );
+  }
+
+  /// 位置情報の権限リクエスト.
+  Future<void> _requestPermission() async {
+    var status = await Permission.location.status;
+    if (!status.isGranted) {
+      await Permission.location.request();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('すでに権限を持っているみたいです.'),
+        ),
+      );
+    }
   }
 }
