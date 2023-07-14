@@ -19,6 +19,7 @@ class _MapSampleState extends State<MapSample> {
   final Map<String, Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) async {
+    _mapController = controller;
     final googleOffices = await locations.getGoogleOffices();
     setState(() {
       _markers.clear();
@@ -66,6 +67,8 @@ class _MapSampleState extends State<MapSample> {
           zoom: 11.0,
         ),
         markers: _markers.values.toSet(),
+        myLocationEnabled: true,
+        onLongPress: (latLng) => _addMarker(latLng: latLng),
       ),
     );
   }
@@ -82,5 +85,24 @@ class _MapSampleState extends State<MapSample> {
         ),
       );
     }
+  }
+
+  /// マーカーを追加.
+  void _addMarker({
+    required LatLng latLng,
+    String? title,
+    String? snippet,
+  }) {
+    final marker = Marker(
+      markerId: MarkerId('$latLng'),
+      position: latLng,
+      infoWindow: InfoWindow(
+        title: title ?? 'わっしょい',
+        snippet: snippet ?? '$latLng',
+      ),
+    );
+    setState(() {
+      _markers['$latLng'] = marker;
+    });
   }
 }
