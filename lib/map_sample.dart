@@ -68,7 +68,9 @@ class _MapSampleState extends State<MapSample> {
         ),
         markers: _markers.values.toSet(),
         myLocationEnabled: true,
+        zoomControlsEnabled: false,
         onLongPress: (latLng) => _addMarker(latLng: latLng),
+        onTap: (latLng) => _moveCamera(latLng),
       ),
     );
   }
@@ -79,6 +81,9 @@ class _MapSampleState extends State<MapSample> {
     if (!status.isGranted) {
       await Permission.location.request();
     } else {
+      if (!mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('すでに権限を持っているみたいです.'),
@@ -104,5 +109,12 @@ class _MapSampleState extends State<MapSample> {
     setState(() {
       _markers['$latLng'] = marker;
     });
+  }
+
+  /// カメラを移動.
+  void _moveCamera(LatLng latLng) {
+    _mapController.animateCamera(
+      CameraUpdate.newLatLng(latLng),
+    );
   }
 }

@@ -91,11 +91,10 @@ Future<Locations?> getGoogleOffices() async {
     print(e);
   }
 
-  return null;
-
-  // return Locations.fromJson(
-  //   json.decode(
-  //     await rootBundle.loadString('assets/locations.json'),
-  //   ),
-  // );
+  // うまくいかなかったらローカルのデータを返す.
+  return Locations.fromJson(
+    json.decode(
+      await rootBundle.loadString('assets/locations.json'),
+    ),
+  );
 }
